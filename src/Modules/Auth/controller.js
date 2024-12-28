@@ -62,7 +62,7 @@ const authController = {
 
   register: async (req, res) => {
     try {
-      const { name, email, password } = req.body;
+      const {  email, password } = req.body;
       const existingUser = await User.findOne({ email });
 
       if (existingUser) {
@@ -73,7 +73,7 @@ const authController = {
       const hashedPassword = await bcrypt.hash(password, salt);
 
       const user = new User({
-        name,
+        
         email,
         password: hashedPassword
       });
