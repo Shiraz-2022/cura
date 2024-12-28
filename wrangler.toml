@@ -1,0 +1,22 @@
+name = "ml-service"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+[build]
+command = "pip install -r requirements.txt"
+
+[build.upload]
+format = "modules"
+main = "./worker.js"
+dir = "."
+
+[[build.upload.rules]]
+type = "CompiledWasm"
+globs = ["**/*.py"]
+
+[vars]
+PYTHON_VERSION = "3.11"
+
+[[rules]]
+type = "ESModule"
+globs = ["**/*.py"]

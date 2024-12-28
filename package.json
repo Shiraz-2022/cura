@@ -1,0 +1,16 @@
+{
+  "name": "ml-service",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "start": "wrangler dev"
+  },
+  "dependencies": {
+    "@expo/vector-icons": "^14.0.4",
+    "react-native-chart-kit": "^6.12.0",
+    "react-native-dropdown-select-list": "^2.0.5",
+    "wrangler": "^3.0.0"
+  }
+}
