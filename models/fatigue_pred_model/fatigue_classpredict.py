@@ -1,38 +1,56 @@
 import numpy as np
 import pandas as pd
-import pickle
-from tensorflow.keras.models import load_model
+import joblib
+from tensorflow import keras
 
-def predict_fatigue_class(age, gender, light_sleep, deep_sleep, rem_sleep, sleep_quality, 
-                          spo2, steps, active_calories, light_activity_time, moderate_activity_time, 
-                          vigorous_activity_time, caloric_intake, carbs, protein, fats):
-    """
-    Predict the fatigue class based on input values.
-    
-    Parameters:
-    - age: Age of the person (in years)
-    - gender: Gender of the person ('Female' or 'Male')
-    - light_sleep: Light sleep in hours (0.5 to 5)
-    - deep_sleep: Deep sleep in hours (0.5 to 3)
-    - rem_sleep: REM sleep in hours (0.5 to 2.5)
-    - sleep_quality: Sleep quality score (50 to 100)
-    - spo2: SpO2 (oxygen saturation percentage) (92 to 99)
-    - steps: Number of steps (2000 to 25000)
-    - active_calories: Active calories (kcal) (300 to 1500)
-    - light_activity_time: Light activity time in hours
-    - moderate_activity_time: Moderate activity time in hours
-    - vigorous_activity_time: Vigorous activity time in hours
-    - caloric_intake: Caloric intake (kcal) (1500 to 4000)
-    - carbs: Carbs intake in grams (150 to 600)
-    - protein: Protein intake in grams (50 to 300)
-    - fats: Fat intake in grams (40 to 150)
-    
-    Returns:
-    - Predicted fatigue class
-    """
+def predict_fatigue_class(new_data):
+    label_encoder = joblib.load('D:/cura/models/fatigue_pred_model/label_encoder.pkl')
+    scaler = joblib.load('D:/cura/models/fatigue_pred_model/scaler.pkl')
+    model = keras.models.load_model('D:/cura/models/fatigue_pred_model/fatigue_predictor_model.keras')
 
-    # Creating a DataFrame with the input data
-    new_data = pd.DataFrame({
+    # Preprocess the new unseen data
+    numerical_features = new_data.select_dtypes(include=['float64', 'int64'])
+    new_data[numerical_features.columns] = scaler.transform(numerical_features)  # Apply the saved scaler
+
+    # Map 'Gender' column to 0 and 1 (same as during training)
+    new_data['Gender'] = new_data['Gender'].map({'Female': 0, 'Male': 1})
+
+    # Handle missing values (drop or impute as necessary)
+    new_data = new_data.dropna()  # Or use imputation if preferred
+
+    # Predict the fatigue class using the model
+    y_pred_probs_new = model.predict(new_data)  # Get prediction probabilities
+
+    # Convert the predicted probabilities to class labels
+    y_pred_classes_new = y_pred_probs_new.argmax(axis=1)  # Choose the class with the highest probability
+
+    # Convert the predicted class labels back to the original labels using the LabelEncoder
+    predicted_classes = label_encoder.inverse_transform(y_pred_classes_new)
+
+    return predicted_classes[0]
+
+# Example usage
+if __name__ == "__main__":
+    # Hardcoded synthetic input (new unseen data) for fatigue class prediction
+    age = 32  # Age of the person (in years)
+    gender = 'Female'  # Gender of the person
+    light_sleep = 3.2  # Light Sleep (hrs)
+    deep_sleep = 0.5  # Deep Sleep (hrs)
+    rem_sleep = 1.8  # REM Sleep (hrs)
+    sleep_quality = 75  # Sleep Quality (out of 100)
+    spo2 = 90  # SpO2 (oxygen saturation percentage)
+    steps = 8000  # Steps
+    active_calories = 450  # Active Calories (kcal)
+    light_activity_time = 2  # Light Activity Time (hrs)
+    moderate_activity_time = 1  # Moderate Activity Time (hrs)
+    vigorous_activity_time = 1  # Vigorous Activity Time (hrs)
+    caloric_intake = 2000  # Caloric Intake (kcal)
+    carbs = 280  # Carbs (g)
+    protein = 80  # Protein (g)
+    fats = 60  # Fats (g)
+
+    # Creating a DataFrame with the synthetic input
+    input_data = pd.DataFrame({
         'Age': [age],
         'Gender': [gender],
         'Light Sleep (hrs)': [light_sleep],
@@ -51,55 +69,6 @@ def predict_fatigue_class(age, gender, light_sleep, deep_sleep, rem_sleep, sleep
         'Fats (g)': [fats],
     })
 
-    # Load the saved transformers and model
-    # Load the .pkl file
-    with open('C:\\Users\\LENOVO\\OneDrive\\Desktop\\New folder\\models\\fatigue_pred_model\\scaler.pkl', 'rb') as file:
-        scaler = pickle.load(file)
-
-    with open('C:\\Users\\LENOVO\\OneDrive\\Desktop\\New folder\\models\\fatigue_pred_model\\label_encoder.pkl', 'rb') as file:
-        label_encoder = pickle.load(file)
-    model = load_model('C:\\Users\\LENOVO\\OneDrive\\Desktop\\New folder\\models\\fatigue_pred_model\\fatigue_predictor_model.h5')  # Load the trained model
-
-    # Step 1: Preprocess the new unseen data
-    # Normalize numerical features using the saved scaler
-    numerical_features = new_data.select_dtypes(include=['float64', 'int64'])
-    new_data[numerical_features.columns] = scaler.transform(numerical_features)  # Apply the saved scaler
-
-    # Map 'Gender' column to 0 and 1 (same as during training)
-    new_data['Gender'] = new_data['Gender'].map({'Female': 0, 'Male': 1})
-
-    # Handle missing values (drop or impute as necessary)
-    new_data = new_data.dropna()  # Or use imputation if preferred
-
-    # Step 2: Predict the fatigue class using the model
-    y_pred_probs_new = model.predict(new_data)  # Get prediction probabilities
-
-    # Convert the predicted probabilities to class labels
-    y_pred_classes_new = y_pred_probs_new.argmax(axis=1)  # Choose the class with the highest probability
-
-    # Step 3: Convert the predicted class labels back to the original labels using the LabelEncoder
-    predicted_classes = label_encoder.inverse_transform(y_pred_classes_new)
-
-    return predicted_classes[0]  # Return the predicted fatigue class
-
-# Example usage:
-predicted_fatigue_class = predict_fatigue_class(
-    age=32,
-    gender='Female',
-    light_sleep=3.2,
-    deep_sleep=1.5,
-    rem_sleep=1.8,
-    sleep_quality=75,
-    spo2=95,
-    steps=8000,
-    active_calories=450,
-    light_activity_time=2,
-    moderate_activity_time=1,
-    vigorous_activity_time=0.5,
-    caloric_intake=2500,
-    carbs=300,
-    protein=100,
-    fats=80
-)
-
-print("Predicted Fatigue Class:", predicted_fatigue_class)
+    # Predict fatigue class
+    predicted_class = predict_fatigue_class(input_data)
+    print("\nPredicted Fatigue Class:", predicted_class)
