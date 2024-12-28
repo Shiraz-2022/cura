@@ -1,0 +1,164 @@
+{
+  "meals": [
+    {
+      "Dish": "Burger",
+      "Calories (approx)": "500-700",
+      "Protein (g) (approx)": "20-30",
+      "Fat (g) (approx)": "25-40",
+      "Carbohydrates (g) (approx)": "50-70",
+      "Fiber (g) (approx)": "5-10"
+    },
+    {
+      "Dish": "Butter Naan",
+      "Calories (approx)": "200-300",
+      "Protein (g) (approx)": "5-10",
+      "Fat (g) (approx)": "10-15",
+      "Carbohydrates (g) (approx)": "30-40",
+      "Fiber (g) (approx)": "2-4"
+    },
+    {
+      "Dish": "Chai",
+      "Calories (approx)": "50-100",
+      "Protein (g) (approx)": "1-2",
+      "Fat (g) (approx)": "1-3",
+      "Carbohydrates (g) (approx)": "10-15",
+      "Fiber (g) (approx)": "0-1"
+    },
+    {
+      "Dish": "Chapati",
+      "Calories (approx)": "100-150",
+      "Protein (g) (approx)": "4-6",
+      "Fat (g) (approx)": "1-3",
+      "Carbohydrates (g) (approx)": "25-35",
+      "Fiber (g) (approx)": "2-4"
+    },
+    {
+      "Dish": "Chole Bhature",
+      "Calories (approx)": "600-800",
+      "Protein (g) (approx)": "20-30",
+      "Fat (g) (approx)": "30-40",
+      "Carbohydrates (g) (approx)": "70-90",
+      "Fiber (g) (approx)": "6-10"
+    },
+    {
+      "Dish": "Dal Makhani",
+      "Calories (approx)": "250-350",
+      "Protein (g) (approx)": "15-20",
+      "Fat (g) (approx)": "10-15",
+      "Carbohydrates (g) (approx)": "20-30",
+      "Fiber (g) (approx)": "5-7"
+    },
+    {
+      "Dish": "Dhokla",
+      "Calories (approx)": "150-200",
+      "Protein (g) (approx)": "5-8",
+      "Fat (g) (approx)": "5-8",
+      "Carbohydrates (g) (approx)": "25-35",
+      "Fiber (g) (approx)": "2-4"
+    },
+    {
+      "Dish": "Fried Rice",
+      "Calories (approx)": "300-400",
+      "Protein (g) (approx)": "10-15",
+      "Fat (g) (approx)": "15-20",
+      "Carbohydrates (g) (approx)": "40-50",
+      "Fiber (g) (approx)": "2-4"
+    },
+    {
+      "Dish": "Idli",
+      "Calories (approx)": "80-120",
+      "Protein (g) (approx)": "4-6",
+      "Fat (g) (approx)": "1-2",
+      "Carbohydrates (g) (approx)": "15-20",
+      "Fiber (g) (approx)": "1-2"
+    },
+    {
+      "Dish": "Jalebi",
+      "Calories (approx)": "200-300",
+      "Protein (g) (approx)": "4-6",
+      "Fat (g) (approx)": "15-20",
+      "Carbohydrates (g) (approx)": "30-40",
+      "Fiber (g) (approx)": "1-2"
+    },
+    {
+      "Dish": "Kaathi Rolls",
+      "Calories (approx)": "300-400",
+      "Protein (g) (approx)": "15-20",
+      "Fat (g) (approx)": "15-20",
+      "Carbohydrates (g) (approx)": "40-50",
+      "Fiber (g) (approx)": "3-5"
+    },
+    {
+      "Dish": "Kadai Paneer",
+      "Calories (approx)": "300-400",
+      "Protein (g) (approx)": "20-25",
+      "Fat (g) (approx)": "20-25",
+      "Carbohydrates (g) (approx)": "20-30",
+      "Fiber (g) (approx)": "3-5"
+    },
+    {
+      "Dish": "Kulfi",
+      "Calories (approx)": "200-300",
+      "Protein (g) (approx)": "5-10",
+      "Fat (g) (approx)": "15-20",
+      "Carbohydrates (g) (approx)": "20-30",
+      "Fiber (g) (approx)": "1-2"
+    },
+    {
+      "Dish": "Masala Dosa",
+      "Calories (approx)": "300-400",
+      "Protein (g) (approx)": "8-12",
+      "Fat (g) (approx)": "15-20",
+      "Carbohydrates (g) (approx)": "50-60",
+      "Fiber (g) (approx)": "3-5"
+    },
+    {
+      "Dish": "Momos",
+      "Calories (approx)": "200-300",
+      "Protein (g) (approx)": "10-15",
+      "Fat (g) (approx)": "10-15",
+      "Carbohydrates (g) (approx)": "30-40",
+      "Fiber (g) (approx)": "2-4"
+    },
+    {
+      "Dish": "Paani Puri",
+      "Calories (approx)": "50-100",
+      "Protein (g) (approx)": "1-2",
+      "Fat (g) (approx)": "2-4",
+      "Carbohydrates (g) (approx)": "10-15",
+      "Fiber (g) (approx)": "1-2"
+    },
+    {
+      "Dish": "Pakode",
+      "Calories (approx)": "150-250",
+      "Protein (g) (approx)": "5-8",
+      "Fat (g) (approx)": "10-15",
+      "Carbohydrates (g) (approx)": "20-30",
+      "Fiber (g) (approx)": "2-3"
+    },
+    {
+      "Dish": "Pav Bhaji",
+      "Calories (approx)": "350-450",
+      "Protein (g) (approx)": "10-15",
+      "Fat (g) (approx)": "20-25",
+      "Carbohydrates (g) (approx)": "40-50",
+      "Fiber (g) (approx)": "3-5"
+    },
+    {
+      "Dish": "Pizza",
+      "Calories (approx)": "500-700",
+      "Protein (g) (approx)": "15-25",
+      "Fat (g) (approx)": "25-35",
+      "Carbohydrates (g) (approx)": "50-70",
+      "Fiber (g) (approx)": "3-5"
+    },
+    {
+      "Dish": "Samosa",
+      "Calories (approx)": "150-250",
+      "Protein (g) (approx)": "5-8",
+      "Fat (g) (approx)": "10-15",
+      "Carbohydrates (g) (approx)": "25-35",
+      "Fiber (g) (approx)": "2-3"
+    }
+  ]
+}
