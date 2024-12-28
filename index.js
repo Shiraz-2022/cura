@@ -28,6 +28,10 @@ const authRoutes = require("./src/Modules/Auth/routes");
 const chatRoutes = require("./src/Modules/Chat/routes");
 const communityRoutes = require("./src/Modules/communities/routes");
 
+//const setupSocket = require("./src/config/setupSocket");
+
+//const io = setupSocket(server);
+
 app.use("/api/auth", authRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/communities", communityRoutes);
@@ -36,17 +40,17 @@ app.get("/", (req, res) => {
   res.status(200).send("Hi this is cura backend");
 });
 
-const wss = new WebSocket.Server({ server });
+// const wss = new WebSocket.Server({ server });
 
-wss.on("connection", (ws) => {
-  ws.on("message", (message) => {
-    wss.clients.forEach((client) => {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(message.toString());
-      }
-    });
-  });
-});
+// wss.on("connection", (ws) => {
+//   ws.on("message", (message) => {
+//     wss.clients.forEach((client) => {
+//       if (client !== ws && client.readyState === WebSocket.OPEN) {
+//         client.send(message.toString());
+//       }
+//     });
+//   });
+// });
 
 mongoose
   .connect(

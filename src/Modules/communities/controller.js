@@ -150,27 +150,14 @@ const createPost = async (req, res) => {
 const fetchPosts = async (req, res) => {
     try {
         const posts = await Post.find({ community: req.params.communityId })
-            .populate({
-                path: 'comments',
-                populate: [
-                    {
-                        path: 'user',
-                        select: 'name email'
-                    },
-                    {
-                        path: 'replies',
-                        populate: {
-                            path: 'user',
-                            select: 'name email'
-                        }
-                    }
-                ]
-            });
-        res.status(200).json(posts);
+            .populate('user', 'name email profileImage')
+            .populate('likes', 'name email profileImage')
+            .populate('threads')
+        res.status(200).json(posts)
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching posts', error });
+        res.status(500).json({ message: 'Error fetching posts', error })
     }
-};
+}
 
 const likePost = async (req, res) => {
     const { postId, userId } = req.body;
@@ -236,68 +223,29 @@ const reportPost = async (req, res) => {
 };
 
 const addComment = async (req, res) => {
-    const { postId, userId, content, parentCommentId } = req.body
+    const { postId, userId, content } = req.body
     try {
         const post = await Post.findById(postId)
         if (!post) return res.status(404).json({ message: 'Post not found' })
 
-        const newComment = {
-            _id: new mongoose.Types.ObjectId(),
-            user: userId,
-            content,
-            likes: [],
-            replies: [],
-            createdAt: new Date()
+        const newThread = {
+            id: Date.now(),
+            Name: "User " + Math.floor(Math.random() * 100),
+            comment: content,
+            upvotes: "0k",
+            time: "0hrs",
+            subThreads: []
         }
 
-        if (!parentCommentId) {
-            post.comments.push(newComment)
-        } else {
-            const findAndAddReply = (comments) => {
-                for (let comment of comments) {
-                    if (comment._id.toString() === parentCommentId) {
-                        if (!comment.replies) {
-                            comment.replies = []
-                        }
-                        comment.replies.push({
-                            _id: new mongoose.Types.ObjectId(),
-                            user: userId,
-                            content,
-                            likes: [],
-                            replies: [],
-                            createdAt: new Date()
-                        })
-                        return true
-                    }
-                    if (comment.replies && comment.replies.length > 0) {
-                        const found = findAndAddReply(comment.replies)
-                        if (found) return true
-                    }
-                }
-                return false
-            }
-
-            const found = findAndAddReply(post.comments)
-            if (!found) return res.status(404).json({ message: 'Parent comment not found' })
+        if (!post.threads) {
+            post.threads = []
         }
-
+        post.threads.push(newThread)
         await post.save()
 
         const updatedPost = await Post.findById(postId)
             .populate('user', 'name email profileImage')
-            .populate({
-                path: 'comments',
-                populate: [
-                    {
-                        path: 'user',
-                        select: 'name email profileImage'
-                    },
-                    {
-                        path: 'replies.user',
-                        select: 'name email profileImage'
-                    }
-                ]
-            })
+            .populate('likes', 'name email profileImage')
 
         res.status(201).json(updatedPost)
     } catch (error) {
@@ -382,37 +330,31 @@ const leaveCommunity = async (req, res) => {
 };
 
 const getCommunityPosts = async (req, res) => {
-    const { communityId } = req.params;
+    const { communityId } = req.params
     try {
         if (!communityId) {
-            return res.status(400).json({ message: 'Community ID is required' });
+            return res.status(400).json({ message: 'Community ID is required' })
         }
 
         const posts = await Post.find({ community: communityId })
             .sort({ createdAt: -1 })
             .populate('user', 'name email profileImage')
             .populate('community', 'title')
-            .populate({
-                path: 'comments',
-                populate: {
-                    path: 'user',
-                    select: 'name email profileImage'
-                }
-            })
-            .lean();
+            .populate('threads')
+            .lean()
 
         if (!posts) {
-            return res.status(404).json({ message: 'No posts found' });
+            return res.status(404).json({ message: 'No posts found' })
         }
 
-        res.status(200).json(posts);
+        res.status(200).json(posts)
     } catch (error) {
         res.status(500).json({ 
             message: 'Error fetching community posts', 
             error: error.message 
-        });
+        })
     }
-};
+}
 
 const getCommunityUsers = async (req, res) => {
     const { communityId } = req.params;
@@ -435,44 +377,19 @@ const getCommunityUsers = async (req, res) => {
 };
 
 const getPostDetails = async (req, res) => {
-    const { postId } = req.params;
+    const { postId } = req.params
     try {
         const post = await Post.findById(postId)
-            .populate('user', 'name email')
-            .populate('likes', 'name email')
-            .populate({
-                path: 'comments',
-                populate: [
-                    {
-                        path: 'user',
-                        select: 'name email'
-                    },
-                    {
-                        path: 'likes',
-                        select: 'name email'
-                    },
-                    {
-                        path: 'replies',
-                        populate: [
-                            {
-                                path: 'user',
-                                select: 'name email'
-                            },
-                            {
-                                path: 'likes',
-                                select: 'name email'
-                            }
-                        ]
-                    }
-                ]
-            });
+            .populate('user', 'name email profileImage')
+            .populate('likes', 'name email profileImage')
+            .populate('threads')
 
-        if (!post) return res.status(404).json({ message: 'Post not found' });
-        res.status(200).json(post);
+        if (!post) return res.status(404).json({ message: 'Post not found' })
+        res.status(200).json(post)
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching post details', error });
+        res.status(500).json({ message: 'Error fetching post details', error })
     }
-};
+}
 
 const likeComment = async (req, res) => {
     const { postId, commentId, userId } = req.body;

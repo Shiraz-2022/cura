@@ -1,22 +1,17 @@
 const mongoose = require('mongoose')
 
 const UserSchema = new mongoose.Schema({
-  name: { type: String, required: true, trim: true },
+  name: { type: String, trim: true },
   email: { type: String, required: true, unique: true, lowercase: true, trim: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ['user', 'doctor', 'admin'], default: 'user', required: true },
+  role: { type: String, enum: ['Patient', 'Doctor', 'Admin'], default: 'user', required: true },
   age: { type: Number, min: 6, max: 120 },
   location: {
-    city: { type: String },
-    country: { type: String },
+    name: { type: String },
     coordinates: {
       type: [Number],
       index: '2dsphere'
-    },
-    place_id: { type: Number },
-    osm_type: { type: String },
-    osm_id: { type: Number },
-    boundingbox: [String]
+    }
   }
 }, { timestamps: true })
 
