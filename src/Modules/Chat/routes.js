@@ -3,8 +3,10 @@ const router = express.Router()
 const { chatController } = require('./controller')
 const { authMiddleware } = require('../Auth/controller')
 
-router.get('/users', authMiddleware.verifyToken, chatController.getUsers)
-router.get('/messages/:userId', authMiddleware.verifyToken, chatController.getMessages)
-router.post('/send', authMiddleware.verifyToken, chatController.sendMessage)
+router.post('/initiate', authMiddleware.verifyToken, chatController.initiateChat)
+router.get('/:userId/:receiverId', authMiddleware.verifyToken, chatController.getChatByUsers)
+router.get('/history', authMiddleware.verifyToken, chatController.getChatHistory)
+router.get('/:chatId/messages', authMiddleware.verifyToken, chatController.getChatMessages)
+router.post('/message', authMiddleware.verifyToken, chatController.sendMessage)
 
 module.exports = router

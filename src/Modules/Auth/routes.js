@@ -9,5 +9,6 @@ router.get('/verify', authMiddleware.verifyToken, (req, res) => {
 });
 router.post('/update-user-details', authMiddleware.verifyToken, authController.updateUserDetails);
 router.get('/users', authMiddleware.verifyToken, authController.getUsers);
+router.get('/users/:userId', authMiddleware.verifyToken, authController.getUserById);
 
 module.exports = router
