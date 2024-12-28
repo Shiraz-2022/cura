@@ -2,6 +2,7 @@ const Community = require('./model');
 const Post = require('./postModel');
 const User = require('../Auth/model').User;
 const cloudinary = require('../../config/cloudinary')
+const mongoose = require('mongoose')
 
 const createCommunity = async (req, res) => {
     try {
@@ -175,15 +176,26 @@ const likePost = async (req, res) => {
     const { postId, userId } = req.body;
     try {
         const post = await Post.findById(postId);
-        if (!post) return res.status(404).json({ message: 'Post not found' });
-
-        if (!post.likes.includes(userId)) {
-            post.likes.push(userId);
-            await post.save();
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
         }
-        res.status(200).json(post);
+
+        const isLiked = post.likes.includes(userId);
+        if (isLiked) {
+            post.likes = post.likes.filter(id => id.toString() !== userId);
+        } else {
+            post.likes.push(userId);
+        }
+        
+        await post.save();
+        
+        const updatedPost = await Post.findById(postId)
+            .populate('user', 'name email profileImage')
+            .populate('likes', 'name email profileImage');
+            
+        res.status(200).json(updatedPost);
     } catch (error) {
-        res.status(500).json({ message: 'Error liking post', error });
+        res.status(500).json({ message: 'Error updating post like', error: error.message });
     }
 };
 
@@ -191,13 +203,20 @@ const dislikePost = async (req, res) => {
     const { postId, userId } = req.body;
     try {
         const post = await Post.findById(postId);
-        if (!post) return res.status(404).json({ message: 'Post not found' });
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
 
         post.likes = post.likes.filter(id => id.toString() !== userId);
         await post.save();
-        res.status(200).json(post);
+
+        const updatedPost = await Post.findById(postId)
+            .populate('user', 'name email profileImage')
+            .populate('likes', 'name email profileImage');
+
+        res.status(200).json(updatedPost);
     } catch (error) {
-        res.status(500).json({ message: 'Error disliking post', error });
+        res.status(500).json({ message: 'Error removing like', error: error.message });
     }
 };
 
@@ -217,44 +236,74 @@ const reportPost = async (req, res) => {
 };
 
 const addComment = async (req, res) => {
-    const { postId, userId, content, parentCommentId } = req.body;
+    const { postId, userId, content, parentCommentId } = req.body
     try {
-        const post = await Post.findById(postId);
-        if (!post) return res.status(404).json({ message: 'Post not found' });
+        const post = await Post.findById(postId)
+        if (!post) return res.status(404).json({ message: 'Post not found' })
 
         const newComment = {
+            _id: new mongoose.Types.ObjectId(),
             user: userId,
             content,
             likes: [],
-            replies: []
-        };
+            replies: [],
+            createdAt: new Date()
+        }
 
         if (!parentCommentId) {
-            post.comments.push(newComment);
+            post.comments.push(newComment)
         } else {
             const findAndAddReply = (comments) => {
                 for (let comment of comments) {
                     if (comment._id.toString() === parentCommentId) {
-                        comment.replies.push(newComment);
-                        return true;
+                        if (!comment.replies) {
+                            comment.replies = []
+                        }
+                        comment.replies.push({
+                            _id: new mongoose.Types.ObjectId(),
+                            user: userId,
+                            content,
+                            likes: [],
+                            replies: [],
+                            createdAt: new Date()
+                        })
+                        return true
                     }
                     if (comment.replies && comment.replies.length > 0) {
-                        if (findAndAddReply(comment.replies)) return true;
+                        const found = findAndAddReply(comment.replies)
+                        if (found) return true
                     }
                 }
-                return false;
-            };
+                return false
+            }
 
-            const found = findAndAddReply(post.comments);
-            if (!found) return res.status(404).json({ message: 'Parent comment not found' });
+            const found = findAndAddReply(post.comments)
+            if (!found) return res.status(404).json({ message: 'Parent comment not found' })
         }
 
-        await post.save();
-        res.status(201).json(post);
+        await post.save()
+
+        const updatedPost = await Post.findById(postId)
+            .populate('user', 'name email profileImage')
+            .populate({
+                path: 'comments',
+                populate: [
+                    {
+                        path: 'user',
+                        select: 'name email profileImage'
+                    },
+                    {
+                        path: 'replies.user',
+                        select: 'name email profileImage'
+                    }
+                ]
+            })
+
+        res.status(201).json(updatedPost)
     } catch (error) {
-        res.status(500).json({ message: 'Error adding comment', error });
+        res.status(500).json({ message: 'Error adding comment', error: error.message })
     }
-};
+}
 
 const deleteComment = async (req, res) => {
     const { postId, commentId, userId, parentCommentId } = req.body;
@@ -335,28 +384,33 @@ const leaveCommunity = async (req, res) => {
 const getCommunityPosts = async (req, res) => {
     const { communityId } = req.params;
     try {
+        if (!communityId) {
+            return res.status(400).json({ message: 'Community ID is required' });
+        }
+
         const posts = await Post.find({ community: communityId })
             .sort({ createdAt: -1 })
-            .populate('user', 'name email')
+            .populate('user', 'name email profileImage')
+            .populate('community', 'title')
             .populate({
                 path: 'comments',
-                populate: [
-                    {
-                        path: 'user',
-                        select: 'name email'
-                    },
-                    {
-                        path: 'replies',
-                        populate: {
-                            path: 'user',
-                            select: 'name email'
-                        }
-                    }
-                ]
-            });
+                populate: {
+                    path: 'user',
+                    select: 'name email profileImage'
+                }
+            })
+            .lean();
+
+        if (!posts) {
+            return res.status(404).json({ message: 'No posts found' });
+        }
+
         res.status(200).json(posts);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching community posts', error });
+        res.status(500).json({ 
+            message: 'Error fetching community posts', 
+            error: error.message 
+        });
     }
 };
 

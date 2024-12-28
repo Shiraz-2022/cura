@@ -34,21 +34,43 @@ router.post('/join', authMiddleware.verifyToken, joinCommunity);
 router.get('/:communityId/members', authMiddleware.verifyToken, getCommunityMembers);
 
 
-router.post('/community/post', authMiddleware.verifyToken, upload.single('image'), createPost);
+router.post('/post', authMiddleware.verifyToken, upload.single('image'), createPost);
 router.get('/community/posts', fetchPosts);
-router.post('/community/post/like', likePost);
-router.post('/community/post/dislike', dislikePost);
+router.post('/community/post/like', authMiddleware.verifyToken, likePost);
+router.post('/community/post/dislike', authMiddleware.verifyToken, dislikePost);
 router.post('/community/post/report', reportPost);
 router.post('/community/post/comment', addComment);
 router.delete('/community/post/comment', deleteComment);
 router.delete('/community/post', deletePost);
 router.post('/community/leave', leaveCommunity);
-router.get('/community/:communityId/posts', getCommunityPosts);
+router.get('/community/:communityId/posts', authMiddleware.verifyToken, getCommunityPosts);
 router.get('/community/:communityId/users', getCommunityUsers);
 router.get('/community/post/:postId', getPostDetails);
 router.post('/community/post/comment/like', likeComment);
 router.post('/community/post/comment/dislike', dislikeComment);
 router.get('/:communityId/members', authMiddleware.verifyToken, getCommunityMembers);
+
+router.get('/search', authMiddleware.verifyToken, async (req, res) => {
+    try {
+        const searchQuery = req.query.q
+        const communities = await Community.find({
+            $or: [
+                { title: { $regex: searchQuery, $options: 'i' } },
+                { subtitle: { $regex: searchQuery, $options: 'i' } },
+                { 'location.city': { $regex: searchQuery, $options: 'i' } },
+                { 'location.country': { $regex: searchQuery, $options: 'i' } }
+            ]
+        })
+        .populate('admin', 'name email')
+        .populate('doctors', 'name email')
+        .populate('users', 'name email')
+        .sort({ createdAt: -1 })
+
+        res.status(200).json(communities)
+    } catch (error) {
+        res.status(500).json({ message: 'Error searching communities', error: error.message })
+    }
+})
 
 router.get('/', async (req, res) => {
     try {
