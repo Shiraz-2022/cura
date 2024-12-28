@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import joblib
+import pickle
 from tensorflow.keras.models import load_model
 
 def predict_fatigue_class(age, gender, light_sleep, deep_sleep, rem_sleep, sleep_quality, 
@@ -52,9 +52,13 @@ def predict_fatigue_class(age, gender, light_sleep, deep_sleep, rem_sleep, sleep
     })
 
     # Load the saved transformers and model
-    label_encoder = joblib.load('C:\\Users\\LENOVO\\OneDrive\\Desktop\\New folder\\models\\fatigue_pred_model\\label_encoder.pkl')  # Load LabelEncoder for 'Fatigue Class'
-    scaler = joblib.load('C:\\Users\\LENOVO\\OneDrive\\Desktop\\New folder\\models\\fatigue_pred_model\\scaler.pkl')  # Load StandardScaler for numerical features
-    model = load_model('C:\\Users\\LENOVO\\OneDrive\\Desktop\\New folder\\models\\fatigue_pred_model\\fatigue_predictor_model.keras')  # Load the trained model
+    # Load the .pkl file
+    with open('C:\\Users\\LENOVO\\OneDrive\\Desktop\\New folder\\models\\fatigue_pred_model\\scaler.pkl', 'rb') as file:
+        scaler = pickle.load(file)
+
+    with open('C:\\Users\\LENOVO\\OneDrive\\Desktop\\New folder\\models\\fatigue_pred_model\\label_encoder.pkl', 'rb') as file:
+        label_encoder = pickle.load(file)
+    model = load_model('C:\\Users\\LENOVO\\OneDrive\\Desktop\\New folder\\models\\fatigue_pred_model\\fatigue_predictor_model.h5')  # Load the trained model
 
     # Step 1: Preprocess the new unseen data
     # Normalize numerical features using the saved scaler
