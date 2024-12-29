@@ -37,6 +37,8 @@ const chatRoutes = require("./src/Modules/Chat/routes");
 const communityRoutes = require("./src/Modules/communities/routes");
 const wearablesRoutes = require("./src/Modules/wearables/routes");
 
+const foodPredictionRoutes = require("./src/Modules/FoodPrediction/routes");
+
 //const setupSocket = require("./src/config/setupSocket");
 
 //const io = setupSocket(server);
@@ -69,6 +71,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/communities", communityRoutes);
 //app.use("/api/wearables", wearablesRoutes);
+app.use("/api/ai", foodPredictionRoutes);
 
 const GOOGLE_FIT_URL = "https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate";
 
