@@ -1,50 +1,8 @@
-# Welcome to your Expo app 👋
+## The problem Cura solves
+Chronic disease patients often face significant isolation, both emotionally and socially, which makes managing their condition more difficult. Many lack access to the right tools, support networks, or real-time insights into their health, leaving them feeling overwhelmed and disconnected. Traditional healthcare often focuses solely on treatment, neglecting the emotional and community aspects that are crucial for long-term well-being. Without proper support, patients can struggle with the daily challenges of managing their condition, leading to a decline in both physical and mental health. This lack of connection can also result in patients feeling like they are facing their health journey alone, making it even harder to maintain consistent self-care.
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Tech stack
+React Native, Expo, Node.js, TypeScript, MongoDB, PyTorch, Scikit learn, AWS, Flask.
 
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Solution 
+Our app offers a holistic solution for managing health and fostering community among chronic disease patients. It combines advanced health tracking features, such as real-time monitoring of nutrients like fats, proteins, carbs, and calories, and integrates seamlessly with smartwatches to gather vital metrics like heart rate and activity levels. Using AI-powered tools, the app provides image-based meal analysis, personalized diet plans, and fatigue prediction to empower users with actionable insights for healthier living. Beyond health management, the app builds a strong sense of community through global and regional groups where users can share experiences and support each other. Certified doctors are part of the community, offering guidance and answering questions, with plans for future one-on-one premium consultations. With its secure deployment on AWS, simplified OAuth login, and robust features, the app not only supports individual health but also fosters a network of care and belonging, creating a comprehensive ecosystem for wellness.
